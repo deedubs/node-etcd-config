@@ -1,0 +1,23 @@
+{
+  "name": "node-etcd-config",
+  "version": "0.0.1-alpha",
+  "description": "Load and watch config out of etcd",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/deedubs/node-etcd-config.git"
+  },
+  "keywords": [
+    "etcd",
+    "config"
+  ],
+  "author": "Dan Williams <me@deedubs.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deedubs/node-etcd-config/issues"
+  },
+  "homepage": "https://github.com/deedubs/node-etcd-config"
+}
