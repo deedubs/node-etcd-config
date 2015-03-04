@@ -1,6 +1,6 @@
 {
   "name": "etcd-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Load and watch config out of etcd",
   "main": "index.js",
   "scripts": {
