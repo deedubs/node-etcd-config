@@ -1,6 +1,6 @@
 {
   "name": "etcd-config",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Load and watch config out of etcd",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,9 @@
     "config"
   ],
   "author": "Dan Williams <me@deedubs.com>",
+  "contributors": [
+    "Marcus Stong <stongo@gmail.com> (http://github.com/stongo)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/deedubs/node-etcd-config/issues"
