@@ -13,8 +13,12 @@ var appConfig = new EtcdConfig({connectionString: 'http://127.0.0.1:4001/', json
 appConfig.identify('my-app');
 
 // load the configuration
-appConfig.load(function _loadPluginConfig (err, config) {
+appConfig.load(function (err, config) {
     console.log('config loaded: %j', config);
+
+    appConfig.on('changed', function (item) {
+        console.log('key % changed', item.key);
+    });
 });
 ```
 
