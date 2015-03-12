@@ -4,7 +4,9 @@
   "description": "Load and watch config out of etcd",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test node node_modules/lab/bin/lab -m 10000",
+    "test-cov": "NODE_ENV=test node node_modules/lab/bin/lab -t 100",
+    "test-cov-html": "NODE_ENV=test node node_modules/lab/bin/lab -r html -o coverage.html"
   },
   "repository": {
     "type": "git",
