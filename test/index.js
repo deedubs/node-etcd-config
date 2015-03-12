@@ -1,16 +1,18 @@
 var Code = require('code');
 var Lab = require('lab');
 var lab = exports.lab = Lab.script();
-var http = require('http');
+var Wreck = require('wreck');
 var querystring = require('querystring');
 var identify = 'test-' + Date.now();
+var EtcdConfig = require('../');
 
 lab.experiment('etcd-config', function() {
 
     lab.before(function (done) {
         // set test keys
-        http.get('http://localhost:4001/version', function (res) {
-            if (res.statusCode !== 200) {
+        Wreck.get('http://localhost:4001/version', function (err, res, payload) {
+            //console.log('payload: %s', payload);
+            if (err || res.statusCode !== 200) {
                 return done(new Error('error connecting to etcd'));
             }
             return done();
@@ -20,83 +22,91 @@ lab.experiment('etcd-config', function() {
     lab.before(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/test';
-        var postData = querystring.stringify({
-          value: 'foo'
-        });
+        var path = '/v2/keys/' + key;
         var options = {
-            hostname: 'localhost',
-            port: 4001,
-            path: '/v2/keys/' + key,
-            method: 'PUT'
+            payload: 'value=foo',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         };
-        var req = http.request(options, function (res) {
+        Wreck.put('http://127.0.0.1:4001' + path, options, function (err, res, payload) {
+            //console.log('payload: %s', payload);
             if (res.statusCode !== 201) {
                 return done(new Error('error writing to etcd'));
             }
             return done();
         });
-        req.write(postData);
-        req.end();
     });
 
     lab.before(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/json';
-        var postData = querystring.stringify({
-          value: JSON.stringify(['foo', 'bar'])
-        });
+        var path = '/v2/keys/' + key;
         var options = {
-            hostname: 'localhost',
-            port: 4001,
-            path: '/v2/keys/' + key,
-            method: 'PUT'
+            payload: 'value=' + JSON.stringify(['foo', 'bar']),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         };
-        var req = http.request(options, function (res) {
+        Wreck.put('http://127.0.0.1:4001' + path, options, function (err, res, payload) {
+            //console.log('payload: %s', payload);
             if (res.statusCode !== 201) {
                 return done(new Error('error writing to etcd'));
             }
             return done();
         });
-        req.write(postData);
-        req.end();
     });
 
     lab.before(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/mest/test';
-        var postData = querystring.stringify({
-          value: 'moo'
-        });
+        var path = '/v2/keys/' + key;
         var options = {
-            hostname: 'localhost',
-            port: 4001,
-            path: '/v2/keys/' + key,
-            method: 'PUT'
+            payload: 'value=moo',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         };
-        var req = http.request(options, function (res) {
+        Wreck.put('http://127.0.0.1:4001' + path, options, function (err, res, payload) {
+            //console.log('payload: %s', payload);
             if (res.statusCode !== 201) {
                 return done(new Error('error writing to etcd'));
             }
             return done();
         });
-        req.write(postData);
-        req.end();
+    });
+
+    lab.test('initializes', function (done) {
+        var options = {
+            connectionString: 'http://127.0.0.1:4001/'
+        };
+        var testConfig = new EtcdConfig(options);
+        Code.expect(testConfig).to.exist();
+        done();
+    });
+
+    lab.test('returns a config', function (done) {
+        var options = {
+            connectionString: 'http://127.0.0.1:4001/'
+        };
+        var testConfig = new EtcdConfig(options);
+        testConfig.identify(identify);
+        testConfig.load(function (err, config) {
+            Code.expect(err).to.not.exist();
+            Code.expect(config).to.exist();
+            done();
+        });
     });
 
     lab.after(function (done) {
         var key = 'applications/' + identify;
-        var options = {
-            hostname: 'localhost',
-            port: 4001,
-            path: '/v2/keys/' + key + '?recursive=true',
-            method: 'DELETE'
-        };
-        var req = http.request(options, function (res) {
+        var path = '/v2/keys/' + key + '?recursive=true&dir=false';
+        Wreck.delete('http://127.0.0.1:4001' + path, null, function (err, res, payload) {
+            //console.log('payload: %s', payload);
             if (res.statusCode !== 200) {
                 return done(new Error('error deleting key in etcd'));
             }
             return done();
         });
-        req.end();
     });
 });
