@@ -71,6 +71,30 @@ lab.experiment('etcd-config', function() {
         done();
     });
 
+    lab.test('handles etcd connection error', function (done) {
+        var options = {
+            connectionString: 'http://127.0.0.1:4002/'
+        };
+        var testConfig = new EtcdConfig(options);
+        testConfig.identify(identify);
+        testConfig.load(function (err, config) {
+            Code.expect(err).to.exist();
+            done();
+        });
+    });
+
+    lab.test('handles invalid identify function', function (done) {
+        var options = {
+            connectionString: 'http://127.0.0.1:4001/'
+        };
+        var testConfig = new EtcdConfig(options);
+        testConfig.identify('eh');
+        testConfig.load(function (err, config) {
+            Code.expect(err).to.exist();
+            done();
+        });
+    });
+
     lab.test('returns a valid config', function (done) {
         var options = {
             connectionString: 'http://127.0.0.1:4001/'
@@ -101,7 +125,7 @@ lab.experiment('etcd-config', function() {
         });
     });
 
-    lab.test('emits changed events', function (done) {
+    lab.test('emits changed set events', function (done) {
         var options = {
             connectionString: 'http://127.0.0.1:4001/',
             jsonKeys: true
