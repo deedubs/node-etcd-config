@@ -33,3 +33,6 @@ passed as an object to constructor
 
 ## Events
 * 'changed': fired on changes to etcd keys, returning a `changed` object
+
+## Testing
+To run the tests, an instance of etcd must be available at `http://127.0.0.1:4001`
