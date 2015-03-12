@@ -8,17 +8,7 @@ var EtcdConfig = require('../');
 
 lab.experiment('etcd-config', function() {
 
-    lab.before(function (done) {
-        // set test keys
-        Wreck.get('http://localhost:4001/version', function (err, res, payload) {
-            if (err || res.statusCode !== 200) {
-                return done(new Error('error connecting to etcd'));
-            }
-            return done();
-        });
-    });
-
-    lab.before(function (done) {
+    lab.beforeEach(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/test';
         var path = '/v2/keys/' + key;
@@ -36,7 +26,7 @@ lab.experiment('etcd-config', function() {
         });
     });
 
-    lab.before(function (done) {
+    lab.beforeEach(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/json';
         var path = '/v2/keys/' + key;
@@ -54,7 +44,7 @@ lab.experiment('etcd-config', function() {
         });
     });
 
-    lab.before(function (done) {
+    lab.beforeEach(function (done) {
         // set test keys
         var key = 'applications/' + identify + '/mest/test';
         var path = '/v2/keys/' + key;
@@ -110,8 +100,7 @@ lab.experiment('etcd-config', function() {
             done();
         });
     });
-// Figure out how to test this. Async issues with before and after causing this to fail
-/*
+
     lab.test('emits changed events', function (done) {
         var options = {
             connectionString: 'http://127.0.0.1:4001/',
@@ -124,8 +113,8 @@ lab.experiment('etcd-config', function() {
             Code.expect(config).to.exist();
             Code.expect(config.test).to.equal('foo');
 
-            testConfig.on('changed', function (item) {
-                console.log('changed: %j', item);
+            testConfig.once('changed', function (item) {
+                Code.expect(item).to.exist();
                 Code.expect(item.key).to.equal('test');
                 Code.expect(item.value).to.equal('choochoo');
                 done();
@@ -140,17 +129,14 @@ lab.experiment('etcd-config', function() {
                 }
             };
             Wreck.put('http://127.0.0.1:4001' + path, options, function (err, res, payload) {
-                console.log('payload: %s', payload);
-                console.log('code: %s', res.statusCode)
                 if (err || res.statusCode !== 200) {
                     return done(new Error('error writing to etcd'));
                 }
             });
         });
     });
-*/
 
-    lab.after(function (done) {
+    lab.afterEach(function (done) {
         var key = 'applications/' + identify;
         var path = '/v2/keys/' + key + '?recursive=true&dir=false';
         Wreck.delete('http://127.0.0.1:4001' + path, null, function (err, res, payload) {
