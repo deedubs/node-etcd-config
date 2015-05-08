@@ -17,7 +17,7 @@ appConfig.load(function (err, config) {
     console.log('config loaded: %j', config);
 
     appConfig.on('changed', function (item) {
-        console.log('key % changed', item.key);
+        console.log('key %s changed', item.key);
     });
 });
 ```
@@ -28,8 +28,8 @@ passed as an object to constructor
 * jsonKeys: set to `true` if configuration values saved as JSON in etcd. Defaults to false (optional)
 
 ## Methods
-* identify(applicatioName): identifies where to find the etcd keys for config using tree pattern /applications/{applicationName}
-* load(callback): callback called when config parsed from etcd. callback signature is `function(err, config)`
+* identify(applicationName): identifies where to find the etcd keys for config using tree pattern /applications/{applicationName}
+* load(callback): callback called when config parsed from etcd. Callback signature is `function(err, config)`
 
 ## Events
 * 'changed': fired on changes to etcd keys, returning a `changed` object
